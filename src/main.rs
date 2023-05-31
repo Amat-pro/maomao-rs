@@ -1,6 +1,6 @@
 mod mongo_developer;
 
-use mp3::check_mp3;
+use mp3::{can_open, check_mp3};
 use std::env;
 
 #[tokio::main]
@@ -9,8 +9,9 @@ async fn main() {
     // mongo_developer::check_size().await;
     // println!("=======> done check");
 
+    let start_time = chrono::Local::now();
     // check mp3
-    println!("=======> start mp3 check");
+    println!("=======> start mp3 check, start_time: {}", start_time.to_string());
 
     match env::current_dir() {
         Ok(current_dir) => {
@@ -31,5 +32,7 @@ async fn main() {
             println!("err: {}", e);
         }
     }
-    println!("=======> done mp3 check");
+
+    let end_time = chrono::Local::now();
+    println!("=======> done mp3 check, start_time: {}", end_time.to_string());
 }

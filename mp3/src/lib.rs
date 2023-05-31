@@ -25,6 +25,8 @@ pub async fn check_mp3() -> io::Result<()> {
         let strs: Vec<&str> = line_str.split(",").collect();
         let url = strs[2];
 
+        println!("check start: {}", url);
+
         let response_r = reqwest::get(url.clone()).await;
         match response_r {
             Ok(response) => {
@@ -35,13 +37,13 @@ pub async fn check_mp3() -> io::Result<()> {
                         let mut chapter_f = File::create("chapter.mp3").unwrap();
                         let _ = chapter_f.write_all(bytes.as_ref());
                         if !can_open("chapter.mp3".to_string()) {
-                            println!("cannot open, line: {}", line_str.clone());
+                            println!("cannot open, line: {}", line_str);
                         }
                         // 删除文件
                         let _ = std::fs::remove_file("chapter.mp3");
                     }
                     Err(e) => {
-                        println!("url bytes fail: {}, err: {}", line_str.clone(), e);
+                        println!("url bytes fail: {}, err: {}", line_str, e);
                         continue;
                     }
                 }
@@ -57,7 +59,7 @@ pub async fn check_mp3() -> io::Result<()> {
 }
 
 
-fn can_open(path: String) -> bool {
+pub fn can_open(path: String) -> bool {
     let tag = Tag::read_from_path(path);
 
     return match tag {
