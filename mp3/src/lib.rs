@@ -6,7 +6,7 @@ use id3::Tag;
 // 文件示例
 // 1663759011758997504,陌生的地方,https://readfile.zhulang.com/audio_wp/miyue/6.农门寡妇养包子/第001集 陌生的地方.mp3
 // 1663759011763191808,窝窝头,https://readfile.zhulang.com/audio_wp/miyue/6.农门寡妇养包子/第002集 窝窝头.mp3
-const FILE_PATH: &str = "/Users/luzb/log/album/chapter_url1.txt";
+const FILE_PATH: &str = "/data/service/jin-feed/audio_mp3_check/chapter_url.txt";
 
 pub async fn check_mp3() -> io::Result<()> {
     let file = File::open(FILE_PATH)?;
