@@ -34,5 +34,5 @@ async fn main() {
     }
 
     let end_time = chrono::Local::now();
-    println!("=======> done mp3 check, start_time: {}", end_time.to_string());
+    println!("=======> done mp3 check, start_time: {}, end_time: {}", start_time.to_string(), end_time.to_string());
 }
