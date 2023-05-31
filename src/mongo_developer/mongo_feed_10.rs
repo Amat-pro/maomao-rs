@@ -33,19 +33,42 @@ pub async fn check_size() {
                     return future::ready(false);
                 }
 
-                if feed.f_size < feed.origin_content_length {
+                // 查找f_size < 源文件的
+                // if feed.f_size < feed.origin_content_length {
+                //     return future::ready(true);
+                // }
+                // 查找f_size > 源文件的
+                if feed.f_size > feed.origin_content_length {
                     return future::ready(true);
                 }
+
                 return future::ready(false);
             }).collect::<Vec<MongoFeed101>>().await;
 
-            println!("feeds length: {}", feeds.len());
+            // println!("feeds length: {}", feeds.len());
+            // for feed in feeds {
+            //     let filter = doc! {
+            //         "_id": feed._id,
+            //     };
+            //     let update = doc! {
+            //         "$set": {
+            //             "size_ne": true,
+            //             "diff": feed.origin_content_length - feed.f_size
+            //         }
+            //     };
+            //     let _ = collection.update_one(filter, update, None).await;
+            // }
+
+            println!("feed length: {}", feeds.len());
             for feed in feeds {
                 let filter = doc! {
                     "_id": feed._id,
                 };
                 let update = doc! {
-                    "$set": { "size_ne": true }
+                    "$set": {
+                        "size_ne": true,
+                        "diff": feed.f_size - feed.origin_content_length
+                    }
                 };
                 let _ = collection.update_one(filter, update, None).await;
             }

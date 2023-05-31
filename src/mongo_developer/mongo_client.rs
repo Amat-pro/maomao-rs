@@ -2,7 +2,7 @@ use mongodb::{options::ClientOptions, Client};
 use std::sync::Once;
 use futures::executor::block_on;
 
-const URL: &str = "mongodb://maomao:maomao%40123@192.168.9.111:27017/Mytest";
+const URL: &str = "";
 
 static START: Once = Once::new();
 // MONGO_CLIENT Do not edit it unless init method
