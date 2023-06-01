@@ -1,9 +1,9 @@
 use std::fs::{File};
 use std::io::{self, BufRead, Write};
 use id3::Tag;
-use hound::{WavReader};
+// use hound::{WavReader};
 use std::io::BufReader;
-use rodio::Decoder;
+// use rodio::Decoder;
 use tokio::task::JoinHandle;
 use tokio::task;
 
@@ -110,63 +110,63 @@ async fn check(line_str: String) {
 }
 
 
-pub fn can_open(path: String) -> bool {
-    // 1.
-    // return match WavReader::open(path) {
-    //     Ok(_reader) => {
-    //         // 读取 WAV 文件成功，可以认为音频流有效
-    //         // let spec = reader.spec();
-    //         // println!("音频流有效");
-    //         // println!("通道数: {}", spec.channels);
-    //         // println!("采样率: {}", spec.sample_rate);
-    //         // println!("样本格式: {:?}", spec.sample_format);
-    //         // 可以继续读取其他音频流信息
-    //
-    //         true
-    //     }
-    //     Err(err) => {
-    //         // 无法读取音频流，可能文件损坏或不是有效的音频流
-    //         println!("无效的音频流: {:?}", err);
-    //
-    //         false
-    //     }
-    // };
-
-    // 2.
-    // let tag = Tag::read_from_path(path.clone());
-    // return match tag {
-    //     Ok(_) => {
-    //         true
-    //     }
-    //     Err(e) => {
-    //         println!("open err: {}", e);
-    //         false
-    //     }
-    // };
-
-    // 3. 可以采纳 需要alsa库的支持
-    return match File::open(path) {
-        Ok(file) => {
-            let reader = BufReader::new(file);
-            match Decoder::new(reader) {
-                Ok(decoder) => {
-                    // 成功打开和解码 MP3 文件，可以认为文件能正常播放
-                    // println!("MP3 文件能正常播放");
-                    // 可以继续操作解码器，如获取音频信息等
-                    true
-                }
-                Err(err) => {
-                    // 解码失败，可能文件损坏或不是有效的 MP3 文件
-                    println!("无法解码 MP3 文件: {:?}", err);
-                    false
-                }
-            }
-        }
-        Err(err) => {
-            // 无法打开文件
-            println!("无法打开文件: {:?}", err);
-            false
-        }
-    };
-}
+// pub fn can_open(path: String) -> bool {
+//     // 1.
+//     // return match WavReader::open(path) {
+//     //     Ok(_reader) => {
+//     //         // 读取 WAV 文件成功，可以认为音频流有效
+//     //         // let spec = reader.spec();
+//     //         // println!("音频流有效");
+//     //         // println!("通道数: {}", spec.channels);
+//     //         // println!("采样率: {}", spec.sample_rate);
+//     //         // println!("样本格式: {:?}", spec.sample_format);
+//     //         // 可以继续读取其他音频流信息
+//     //
+//     //         true
+//     //     }
+//     //     Err(err) => {
+//     //         // 无法读取音频流，可能文件损坏或不是有效的音频流
+//     //         println!("无效的音频流: {:?}", err);
+//     //
+//     //         false
+//     //     }
+//     // };
+//
+//     // 2.
+//     // let tag = Tag::read_from_path(path.clone());
+//     // return match tag {
+//     //     Ok(_) => {
+//     //         true
+//     //     }
+//     //     Err(e) => {
+//     //         println!("open err: {}", e);
+//     //         false
+//     //     }
+//     // };
+//
+//     // 3. 可以采纳 需要alsa库的支持
+//     return match File::open(path) {
+//         Ok(file) => {
+//             let reader = BufReader::new(file);
+//             match Decoder::new(reader) {
+//                 Ok(decoder) => {
+//                     // 成功打开和解码 MP3 文件，可以认为文件能正常播放
+//                     // println!("MP3 文件能正常播放");
+//                     // 可以继续操作解码器，如获取音频信息等
+//                     true
+//                 }
+//                 Err(err) => {
+//                     // 解码失败，可能文件损坏或不是有效的 MP3 文件
+//                     println!("无法解码 MP3 文件: {:?}", err);
+//                     false
+//                 }
+//             }
+//         }
+//         Err(err) => {
+//             // 无法打开文件
+//             println!("无法打开文件: {:?}", err);
+//             false
+//         }
+//     };
+// }
 
