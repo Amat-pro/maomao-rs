@@ -36,7 +36,7 @@ fn check_bench(line_strs: Vec<String>) {
     let mut tasks = Vec::<JoinHandle<()>>::new();
 
     let mut builder = tokio::runtime::Builder::new_multi_thread();
-    let runtime = builder.max_blocking_threads(20).enable_all().build().unwrap();
+    let runtime = builder.max_blocking_threads(10).enable_all().build().unwrap();
     for str in line_strs {
         let task = runtime.spawn_blocking(|| { check(str) });
         tasks.push(task);
@@ -58,8 +58,13 @@ fn check(line_str: String) {
 
     println!("check start: {}", url);
 
+    let client = reqwest::blocking::Client::builder()
+        .timeout(std::time::Duration::from_secs(120)) // Set the timeout duration to 5 seconds
+        .build()
+        .unwrap();
+
     loop {
-        let response_r = reqwest::blocking::get(url.clone());
+        let response_r = client.get(url.clone()).send();
         match response_r {
             Ok(response) => {
                 let content_length = response.content_length().unwrap();
