@@ -3,8 +3,9 @@ mod mongo_developer;
 use mp3::{check_mp3};
 use std::env;
 
-#[tokio::main]
-async fn main() {
+// #[tokio::main]
+// async fn main() {
+fn main() {
     // println!("=======> start check");
     // mongo_developer::check_size().await;
     // println!("=======> done check");
@@ -23,7 +24,7 @@ async fn main() {
         }
     }
 
-    let result = check_mp3().await;
+    let result = check_mp3();
     match result {
         Ok(_) => {
             println!("ok");

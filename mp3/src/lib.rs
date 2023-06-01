@@ -1,20 +1,15 @@
 use std::fs::{File};
 use std::io::{self, BufRead, Write};
-use id3::Tag;
-// use hound::{WavReader};
-use std::io::BufReader;
-// use rodio::Decoder;
 use tokio::task::JoinHandle;
-use tokio::task;
 
 // todo 修改文件地址
 // 文件示例
 // 1663759011758997504,陌生的地方,https://readfile.zhulang.com/audio_wp/miyue/6.农门寡妇养包子/第001集 陌生的地方.mp3
 // 1663759011763191808,窝窝头,https://readfile.zhulang.com/audio_wp/miyue/6.农门寡妇养包子/第002集 窝窝头.mp3
 const FILE_PATH: &str = "/data/service/jin-feed/audio_mp3_check/chapter_url.txt";
-// const FILE_PATH: &str = "/Users/luzb/00_audio_check/chapter_url1.txt";
+// const FILE_PATH: &str = "/Users/luzb/00_audio_check/new_0601/chapter_url_01.txt";
 
-pub async fn check_mp3() -> io::Result<()> {
+pub fn check_mp3() -> io::Result<()> {
     let file = File::open(FILE_PATH)?;
 
     // 创建一个 BufReader 来读取文件内容
@@ -32,38 +27,43 @@ pub async fn check_mp3() -> io::Result<()> {
         lines.push(line_str);
     }
 
-    check_bench(lines).await;
+    check_bench(lines);
 
     Ok(())
 }
 
-async fn check_bench(line_strs: Vec<String>) {
+fn check_bench(line_strs: Vec<String>) {
     let mut tasks = Vec::<JoinHandle<()>>::new();
+
+    let mut builder = tokio::runtime::Builder::new_multi_thread();
+    let runtime = builder.max_blocking_threads(20).enable_all().build().unwrap();
     for str in line_strs {
-        let task0 = tokio::spawn(check(str));
-        tasks.push(task0)
+        let task = runtime.spawn_blocking(|| { check(str) });
+        tasks.push(task);
     }
 
-    // 等待任务完成
-    for task in tasks {
-        tokio::try_join!(task).unwrap();
+    // 等待这些后台任务的完成
+    for handle in tasks {
+        // `spawn` 方法返回一个 `JoinHandle`，它是一个 `Future`，因此可以通过  `block_on` 来等待它完成
+        runtime.block_on(handle).unwrap();
     }
 }
 
-async fn check(line_str: String) {
-    let strs: Vec<&str> = line_str.split(",").collect();
-    let url = strs[2];
+fn check(line_str: String) {
+    // thread::sleep(Duration::from_secs(10));
+    let strs: Vec<&str> = line_str.split("^").collect();
+    let url = strs[1];
 
-    let file_name = format!("{}.mp3", strs[1]);
+    let file_name = format!("{}.mp3", strs[0]);
 
     println!("check start: {}", url);
 
     loop {
-        let response_r = reqwest::get(url.clone()).await;
+        let response_r = reqwest::blocking::get(url.clone());
         match response_r {
             Ok(response) => {
                 let content_length = response.content_length().unwrap();
-                let bytes_r = response.bytes().await;
+                let bytes_r = response.bytes();
                 match bytes_r {
                     Ok(bytes) => {
                         // 对比大小
@@ -102,7 +102,7 @@ async fn check(line_str: String) {
                 }
             }
             Err(e) => {
-                println!("url get fail: {}, err: {}", line_str.clone(), e);
+                println!("url get fail: {}, err: {}", line_str, e);
                 continue;
             }
         }
