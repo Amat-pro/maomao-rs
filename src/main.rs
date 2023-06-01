@@ -1,6 +1,6 @@
 mod mongo_developer;
 
-use mp3::{can_open, check_mp3};
+use mp3::{check_mp3};
 use std::env;
 
 #[tokio::main]
